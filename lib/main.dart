@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,110 +14,166 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Demo Home Page', id: "640710178", imageUrl: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png", phoneNumber: "0987654321", name: "Dara Sroin",),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  const MyHomePage({super.key, required this.title, required this.id, required this.imageUrl, required this.name, required this.phoneNumber });
 
   final String title;
+  final String imageUrl;
+  final String name;
+  final String id;
+  final String phoneNumber;
+  
+  get onTap => null;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  @override
+  Widget build(BuildContext context) {
+    
+    bool isHovered = true;
+    return Scaffold(
+      appBar: AppBar(
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(widget.title),
+      ),
+      body: Center(
+        
+        child: Column(
+          
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 400,
+              width: double.infinity,
+              // color: Colors.blue,
+              margin: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                colors: [Colors.blue, Colors.purple], // Gradient colors
+                begin: Alignment.topLeft, // Start position
+                end: Alignment.bottomRight, // End position
+                ),
+                // color: Colors.blue,
+                borderRadius: BorderRadius.circular(20), // Rounded corners
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                    offset: Offset(0, 5),
+                    blurStyle: BlurStyle.normal
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  HoverableAvatar(
+                    imageUrl: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                    // onTap: () {
+                    //   print('Avatar clicked!');
+                    // },
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.name,
+                    style: const TextStyle(
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                    )
+                  ),
+                  const SizedBox(height: 10),
+                  Text(widget.id,
+                    style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 84, 83, 83)
+                    )
+                  ),
+                  const SizedBox(height: 10,),
+                  Text(
+                    widget.phoneNumber,
+                    style : const TextStyle(
+                      fontSize: 15,
+                      color: Colors.white
+                    )
+                  )
+                ],
+              ),
+            )
+          ]
+        ),
+      ), 
+    );
+  }
+}
+
+
+class HoverableAvatar extends StatefulWidget {
+  final String imageUrl;
+  // final VoidCallback onTap;
+
+  const HoverableAvatar({
+    super.key,
+    required this.imageUrl,
+    // required this.onTap,
+  });
+
+  @override
+  _HoverableAvatarState createState() => _HoverableAvatarState();
+}
+
+class _HoverableAvatarState extends State<HoverableAvatar> {
+  bool isHovered = false;
+
+  void _launchURL() async {
+    final Uri uri = Uri.parse("https://github.com/ddaarraa");
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      print('Could not launch ${widget.imageUrl}');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: GestureDetector(
+        onTap: _launchURL,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: isHovered
+                ? [
+                    BoxShadow(
+                      color: Colors.pink,
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    ),
+                  ]
+                : [],
+          ),
+          child: CircleAvatar(
+            backgroundImage: NetworkImage(widget.imageUrl),
+            radius: 40,
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
